@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="admin/_fragment :: head(~{::title})">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="../../static/css/typo.css" th:href="@{/css/typo.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link rel="stylesheet" href="../../static/lib/prism/prism.css" th:href="@{/lib/prism/prism.css}">
+    <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- navigation -->
+    <nav th:replace="admin/_fragment :: menu(1)"  class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+        <div class="ui container">
+            <div class="ui inverted secondary stackable menu">
+                <h2 class="ui teal header item"><i class="rss square icon"></i>blogs</h2>
+                <a href="#" class="m-item item m-mobile-hide"><i class="home icon"></i>blogs</a>
+                <a href="#" class="m-item item m-mobile-hide"><i class="bolt icon"></i>Category</a>
+                <a href="#" class="m-item item m-mobile-hide"><i class="archive icon"></i>Label</a>
+                <div class="right m-item m-mobile-hide menu">
+                    <div class="ui dropdown item">
+                        <div class="text">
+                            <img class="ui avatar image" src="../../static/images/macau.jpg">
+                            Runyao Xia
+                        </div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <a href="#" class="item">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a href="#" class="ui menu toggle black icon button m-top-right m-mobile-show">
+            <i class="sidebar icon"></i>
+        </a>
+    </nav>
+    <div class="ui attached pointing menu">
+        <div class="ui container">
+            <div class="right menu">
+                <a href="#" th:href="@{/admin/blogs/input}" class="item">Post</a>
+                <a href="#" th:href="@{/admin/blogs}" class="yellow active item">List</a>
+            </div>
+        </div>
+    </div>
+    <!-- content -->
+    <div class="m-container m-padded-tb-large">
+        <div class="ui container">
+            <div class="ui secondary segment form">
+                <input type="hidden" name="page">
+                <div class="inline fields">
+                    <div class="field">
+                        <input type="text" name="title" placeholder="title">
+                    </div>
+                    <div class="field">
+                        <div class="ui labeled action input">
+                            <div class="ui type selection dropdown">
+                                <input type="hidden" name="typeId">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Category</div>
+                                <div class="menu">
+                                    <div th:each="type:${types}" class="item" data-value="1" th:data-value="${type.id}" th:text="${type.name}">Nature</div>
+                                    <!--/*-->
+                                    <div class="item" data-value="2">Technic</div>
+                                    <!--*/-->
+                                </div>
+                            </div>
+                            <button id="clear-btn" type="button" class="ui clear button">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui checkbox">
+                            <input type="checkbox" id="recommend" name="recommend">
+                            <label for="recommend">Recommendation</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <button type="button" id="search-btn" class="ui blue basic button"><i class="search icon"></i>Search</button>
+                    </div>
+                    <div class="field">
+                        <a href="#" th:href="@{/admin/blogs/input}" class="ui yellow button"><i class="edit icon"></i>New</a>
+                    </div>
+                </div>
+            </div>
+            <!--实现页面局部刷新 -->
+            <div id="table-container">
+                <table th:fragment="blogList" class="ui compact inverted table">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Recommendation</th>
+                        <th>Status</th>
+                        <th>Update</th>
+                        <th>Operation</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="blog,iterStat : ${page.content}">
+                        <td th:text="${iterStat.count}">1</td>
+                        <td th:text="${blog.title}">刻意练习清单</td>
+                        <td th:text="${blog.type.name}">认知升级</td>
+                        <td th:text="${blog.recommend} ? 'yes':'no'">是</td>
+                        <td th:text="${blog.postOrNot} ? 'published':'draft'">是</td>
+                        <td th:text="${blog.updateTime}">2020-10-02 09:45</td>
+                        <td>
+                            <a href="#" th:href="@{/admin/blogs/{id}/input(id=${blog.id})}" class="ui mini blue button">Edit</a>
+                            <a href="#" th:href="@{/admin/blogs/{id}/delete(id=${blog.id})}" class="ui mini red button">Remove</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <th>
+                    <th colspan="7">
+                        <div class="ui mini right floated pagination teal menu" th:if="${page.totalPages}>1">
+                            <a onclick="page(this)" th:attr="data-page=${page.number}-1" class="item" th:unless="${page.first}">Last</a>
+                            <a onclick="page(this)" th:attr="data-page=${page.number}+1" class=" item" th:unless="${page.last}">Next</a>
+                        </div>
+                    </th>
+                    </th>
+                    </tfoot>
+                </table>
+                <div class="ui success message" th:unless="${#strings.isEmpty(message)}">
+                    <i class="close icon"></i>
+                    <dic class="header">reminder: </dic>
+                    <p th:text="${message}">successful!!</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <!-- footer-->
+    <footer th:replace="admin/_fragment :: footer" class="ui inverted vertical segment m=padded-tb-massive">
+        <div class="ui center aligned container">
+            <!-- grid 把整个宽度分为16份-->
+            <div class="ui inverted divided stackable grid">
+                <div class="three wide column">
+                    <div class="ui inverted link list">
+                        <div class="item">
+                            <img src="../../static/images/weibo.png" class="ui rounded image" alt="" style="width:120px">
+                        </div>
+                    </div>
+                </div>
+                <div class="three wide column">
+                    <h4 calss="ui inverted header m-text-thin m-text-spaced">Newest Blog</h4>
+                    <div class="ui inverted link list">
+                        <a href="#" class="item">User Story</a>
+                        <a href="#" class="item">User Story</a>
+                        <a href="#" class="item">User Story</a>
+                    </div>
+                </div>
+                <div class="three wide column">
+                    <h4 calss="ui inverted header m-text-thin m-text-spaced">Contact me</h4>
+                    <div class="ui inverted link list">
+                        <a href="#" class="item m-text-lined">Email: xry1016@gmail.com</a>
+                        <a href="#" class="item m-text-lined">Weibo: 黑猫洗涤剂</a>
+                    </div>
+                </div>
+                <div class="seven wide column">
+                    <p class="m-text-thin m-text-spaced m-opacity-mini">This is my private blog to share my daily life!  Hope you enjoy your time here......</p>
+                    <img src="../../static/images/sea.png" class="ui rounded image" alt="" style="width:430px">
+                </div>
+            </div>
+            <div class="ui inverted section divider"></div>
+            <p class="m-text-thin m-text-spaced m-opacity-small">Copyright © 2020 - 2021 Designed by Runyao Xia</p>
+        </div>
+    </footer>
+
+
+    <!--/*/<th:block th:replace="admin/_fragment :: script">/*/-->
+        <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+        <script src="../../static/lib/prism/prism.js" th:src="@{/lib/prism/prism.js}"></script>
+    <!--/*/</th:block>/*/-->
+
+    <script>
+        $('.menu.toggle').click(function () {
+            $('.m-item').toggleClass('m-mobile-hide')
+        });
+        $('.ui.dropdown').dropdown({
+            on: 'hover'
+        });
+        $('.message .close')
+            .on('click', function () {
+               $(this)
+                .closest('.message')
+                .transition('fade');
+            });
+
+        $('#clear-btn')
+            .on('click', function() {
+                $('.ui.type.dropdown')
+                    .dropdown('clear')
+                ;
+            })
+        ;
+
+        function page(obj) {
+            $("[name='page']").val($(obj).data("page"));
+            loadData();
+        }
+
+        $("#search-btn").click(function() {
+            $("[name='page']").val(0);
+            loadData();
+        });
+
+        // ajax request, retrieve the dynamic data from the form
+        function loadData() {
+            $("#table-container").load(/*[[@{/admin/blogs/search}]]*/"/admin/blogs/search", {
+                title : $("[name='title']").val(),
+                typeId :  $("[name='typeId']").val(),
+                recommend : $("[name='recommend']").prop('checked'),
+                page : $("[name='page']").val(),
+            });
+        }
+    </script>
+</body>
+</html>

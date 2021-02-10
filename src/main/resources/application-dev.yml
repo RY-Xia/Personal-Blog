@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost/blog?allowPublicKeyRetrieval=true&useSSL=FALSE&serverTimezone=UTC
+    username: root
+    password: popnono
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  level:
+    root: info
+    com.runyao.myblog: debug
+  file:
+    path: log/blog-dev.log
