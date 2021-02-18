@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../../static/css/typo.css" th:href="@{/css/typo.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="../../static/lib/prism/prism.css" th:href="@{/lib/prism/prism.css}">
-    <link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" href="../../static/css/adminStyle.css" th:href="@{/css/adminStyle.css}">
     <link rel="stylesheet" href="../../static/lib/editorMD/css/editormd.min.css" th:href="@{/lib/editorMD/css/editormd.min.css}">>
 </head>
 <body>
@@ -33,6 +33,9 @@
                     <i class="dropdown icon"></i>
                     <div class="menu">
                         <a href="#" th:href="@{/admin/logout}" class="item">Logout</a>
+                    </div>
+                    <div class="right m-item item m-mobile-hide">
+                        <i onclick="location='/'" class="left inverted eye icon"></i>
                     </div>
                 </div>
             </div>
