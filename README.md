@@ -1,3 +1,2 @@
 # Personal-Blog
-Clean and Elegant personal blog based on SpringBoot, 
-and will deployed by Docker later.... 
+Clean and Elegant personal blog based on SpringBoot.
