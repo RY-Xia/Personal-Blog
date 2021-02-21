@@ -1,14 +1,13 @@
-#Clean and simple My Blog with Spring Boot.
 
-###Back-end
+Back-end
+=
+Framework: Spring Boot<br>
+Data Persistence: JPA<br>
+HTML template: Thymeleaf<br>
+Markdown: Commonmark<br>
 
-Framework: Spring Boot
-Data Persistence: JPA
-HTML template: Thymeleaf
-Markdown: Commonmark
-
-###Front-end
-
-JS Framework: JQuery
-CSS Framework: Semantic UI 
+Front-end
+===
+JS Framework: JQuery<br>
+CSS Framework: Semantic UI<br> 
 
